@@ -23,3 +23,16 @@ C:\Users\eginzburg\Downloads\Velocloud2Connectwise\Velocloud2Connectwise\obj\Deb
 C:\Users\eginzburg\Downloads\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.AssemblyInfo.cs
 C:\Users\eginzburg\Downloads\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.dll
 C:\Users\eginzburg\Downloads\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.pdb
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.dll.config
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.deps.json
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.runtimeconfig.json
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.runtimeconfig.dev.json
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.dll
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\bin\Debug\netcoreapp2.1\Velocloud2Connectwise.pdb
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.csprojAssemblyReference.cache
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.Properties.Resources.resources
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.csproj.GenerateResource.cache
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.AssemblyInfoInputs.cache
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.AssemblyInfo.cs
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.dll
+C:\SourceCode\Velocloud2Connectwise\Velocloud2Connectwise\obj\Debug\netcoreapp2.1\Velocloud2Connectwise.pdb

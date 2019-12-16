@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\eginzburg\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj": {}
+    "C:\\SourceCode\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj": {}
   },
   "projects": {
-    "C:\\Users\\eginzburg\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj": {
+    "C:\\SourceCode\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\eginzburg\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
+        "projectUniqueName": "C:\\SourceCode\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
         "projectName": "Velocloud2Connectwise",
-        "projectPath": "C:\\Users\\eginzburg\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
-        "packagesPath": "C:\\Users\\eginzburg\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\eginzburg\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\obj\\",
+        "projectPath": "C:\\SourceCode\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
+        "packagesPath": "C:\\Users\\Greg\\.nuget\\packages\\",
+        "outputPath": "C:\\SourceCode\\Velocloud2Connectwise\\Velocloud2Connectwise\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\eginzburg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Greg\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,9 +44,10 @@
           "dependencies": {
             "Magna5.Utilities": {
               "target": "Package",
-              "version": "[1.4.1, )"
+              "version": "[2.0.0, )"
             },
             "Microsoft.NETCore.App": {
+              "suppressParent": "All",
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
@@ -69,10 +70,16 @@
             }
           },
           "imports": [
-            "net461"
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
