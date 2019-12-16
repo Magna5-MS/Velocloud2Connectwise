@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using Velocloud2Connectwise.Models;
 
 namespace Velocloud2Connectwise
 {
@@ -23,7 +24,29 @@ namespace Velocloud2Connectwise
             clientId = apiInfo[3];  // description
             auth = Base64Encode("Magna5+" + publicKey + ":" + privateKey);
         }
+        /// <summary>
+        /// Get a list of cwCompany object (identifier=>name)
+        /// </summary>
+        public List<CwCompany> GetCompaniesObject()
+        {
+            if (this.clientId == "")
+                return null;
+            string pageSize = CountCompanies(); // 202
 
+            var client = new RestClient(baseURL);
+            var request = new RestRequest("company/companies?pageSize=" + pageSize);
+            request.AddHeader("clientId", clientId);
+            request.AddHeader("Authorization", "Basic " + auth);
+            var response = client.Get(request);
+            var content = response.Content;
+
+            if (content.IndexOf("Unauthorized") >= 0)
+                return null;
+            List<CwCompany> lstCompanies = JsonConvert.DeserializeObject<List<CwCompany>>(content);
+            return lstCompanies;
+            
+            
+        }
         /// <summary>
         /// Get a list of CW companies (identifier=>name)
         /// </summary>

@@ -2,17 +2,78 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Magna5.Utilities;
-
+using Velocloud2Connectwise.Models;
 namespace Velocloud2Connectwise
 {
     class Helper
     {
+        /// <summary>
+        /// Get VCO and CW companies as objects, add missing ones to CW
+        /// </summary>
+        public void SyncCompaniesObj()
+        {
+            int added = 0;
+            CwAPI cw = new CwAPI();
+            VcoAPI vco = new VcoAPI();
+            List<VcoCompany> lstVcoCompanies = vco.GetCompaniesObject();
+            List<CwCompany> lstCwCompanies = cw.GetCompaniesObject();
+            List<CwCompany> lstMatches = null;
+            foreach (VcoCompany company in lstVcoCompanies)
+            {
+                Console.WriteLine("VcoID: " + company.id);
+                Console.WriteLine("Address: " + company.streetAddress + " " + company.streetAddress2 + " " + company.city + " " + company.state + " " + company.postalCode + " " + company.country);
+                Console.WriteLine("AccNum: " + company.accountNumber);
+                Console.WriteLine("PhoneNum: " + company.contactPhone);
 
+
+                // Search for company in cw list
+                lstMatches = lstCwCompanies.FindAll(i =>
+                                (i.name == company.name) || i.identifier == MakeIdentifier(company.name)
+                            );
+                if (lstMatches.Count == 0)
+                {
+                    company.containsMatch = false;
+                    // Did not find a match
+                    Console.WriteLine("VCO company not found in CW, let's use CW API to POST it there.");
+                    string cwPost = cw.PostCompany(company.name,
+                        company.streetAddress,
+                        company.streetAddress2,
+                        company.city,
+                        company.state,
+                        company.postalCode,
+                        company.accountNumber,
+                        company.contactPhone);
+                    Console.WriteLine(cwPost);
+                    added++;
+                }
+                else
+                    Console.WriteLine("VCO company found in CW.");
+            }
+
+            if (added > 0)
+            {
+                List<VcoCompany> lstUnmatched = null;
+                lstUnmatched = lstVcoCompanies.FindAll(i => i.containsMatch == false);
+
+                // Send email report of all unmatched companies
+                string emailBody = "The following VeloCloud companies could not be found in ConnectWise and have been added.<br /><br />";
+                foreach(VcoCompany company in lstUnmatched)
+                {
+                    emailBody += company.name + " (" + company.id + ")<br />";
+                }
+                Magna5.Utilities.Mail.SendEmail("growe@magna5global.com", "donotreply@magna5global.com", "VeloCloud - New Accounts Synced", emailBody, null, null, true);
+            }
+
+
+
+            Console.WriteLine(added.ToString() + " new compan" + (added == 1 ? "y" : "ies") + " added to CW.");
+        }
         /// <summary>
         /// Get VCO and CW companies, add missing ones to CW
         /// </summary>
         public void SyncCompanies()
         {
+            
             // Get CW companies
             CwAPI cw = new CwAPI();
             List<KeyValuePair<string, string>> cwCompanies = cw.GetCompanies();

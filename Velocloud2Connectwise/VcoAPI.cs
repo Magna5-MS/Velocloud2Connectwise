@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RestSharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Velocloud2Connectwise.Models;
 
 namespace Velocloud2Connectwise
 {
@@ -45,6 +46,30 @@ namespace Velocloud2Connectwise
                     vcoSession = item.Value;
             }
             return vcoSession;
+        }
+
+        public List<VcoCompany> GetCompaniesObject()
+        {
+            string vcoSession = GetVcoSession();
+            if (vcoSession == "")
+                return null;
+
+            List<VcoCompany> companies = new List<VcoCompany>();
+            var payload = new
+            {
+                with = new List<string> { "edges" }
+            };
+            var jsonBody = JsonConvert.SerializeObject(payload);    // {"with":["edges"]}
+
+            var client = new RestClient(baseURL);
+            var request = new RestRequest("enterpriseProxy/getEnterpriseProxyEnterprises");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
+            request.AddCookie("velocloud.session", vcoSession);
+            var response = client.Post(request);
+            var content = response.Content;
+            List<VcoCompany> lstCompanies = JsonConvert.DeserializeObject<List<VcoCompany>>(content);
+            return lstCompanies;
         }
 
         /// <summary>
