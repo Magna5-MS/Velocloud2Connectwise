@@ -5191,28 +5191,30 @@
     ]
   },
   "packageFolders": {
-    "/Users/gregro/.nuget/packages/": {},
-    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
+    "C:\\Users\\OldServer\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
+      "projectUniqueName": "C:\\Users\\OldServer\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
       "projectName": "Velocloud2Connectwise",
-      "projectPath": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
-      "packagesPath": "/Users/gregro/.nuget/packages/",
-      "outputPath": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/obj/",
+      "projectPath": "C:\\Users\\OldServer\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise.csproj",
+      "packagesPath": "C:\\Users\\OldServer\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\OldServer\\Downloads\\Velocloud2Connectwise\\Velocloud2Connectwise\\Velocloud2Connectwise\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/Users/gregro/.config/NuGet/NuGet.Config"
+        "C:\\Users\\OldServer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "http://apidev.magna5global.com:81/nuget": {},
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -5235,7 +5237,6 @@
             "version": "[2.0.0, )"
           },
           "Microsoft.NETCore.App": {
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true
@@ -5258,16 +5259,10 @@
           }
         },
         "imports": [
-          "net461",
-          "net462",
-          "net47",
-          "net471",
-          "net472",
-          "net48"
+          "net461"
         ],
         "assetTargetFallback": true,
-        "warn": true,
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.100/RuntimeIdentifierGraph.json"
+        "warn": true
       }
     }
   },
@@ -5276,7 +5271,7 @@
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'WindowsBase 4.6.1055' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v2.1'. This package may not be fully compatible with your project.",
+      "message": "Package 'WindowsBase 4.6.1055' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.1'. This package may not be fully compatible with your project.",
       "libraryId": "WindowsBase",
       "targetGraphs": [
         ".NETCoreApp,Version=v2.1"

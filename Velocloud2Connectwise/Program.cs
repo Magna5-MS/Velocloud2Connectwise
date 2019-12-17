@@ -14,10 +14,10 @@ namespace Velocloud2Connectwise
             {
                 try
                 {
-                    //Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'Start Syncing', GETDATE(), 0)", "cnnProduction");
+                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'Start Syncing', GETDATE(), 0)", "cnnProduction");
                     Helper h = new Helper();
                     h.SyncCompanies();
-                    //Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'End Syncing', GETDATE(), 0)", "cnnProduction");
+                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'End Syncing', GETDATE(), 0)", "cnnProduction");
                     //Console.ReadLine();
                 }
                 catch (Exception e)
@@ -25,7 +25,7 @@ namespace Velocloud2Connectwise
                     string msg = e.ToString().Replace("'", "");
                     //Console.WriteLine(msg);
                     //Console.ReadLine();
-                    //Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', '" + msg + "', GETDATE(), 1)", "cnnProduction");
+                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', '" + msg + "', GETDATE(), 1)", "cnnProduction");
                 }
             }
             else if (action == 100) // print a list of CW companies

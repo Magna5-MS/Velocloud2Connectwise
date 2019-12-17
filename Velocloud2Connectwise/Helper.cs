@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Text.RegularExpressions;
 using Magna5.Utilities;
 using Velocloud2Connectwise.Models;
@@ -146,23 +147,28 @@ namespace Velocloud2Connectwise
         /// </summary>
         public static List<string> GetApiInfo(string apiName)
         {
-            List<string> apiInfo = new List<string>();
+            string baseURL = "", consumerKey = "", consumerSecret = "", additionalVal = "";
+            if (apiName == "ConnectWise")
+            {
+                baseURL = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwBaseURL"]) ? ConfigurationManager.AppSettings["cwBaseURL"] : "";
+                consumerKey = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwConsumerKey"]) ? ConfigurationManager.AppSettings["cwConsumerKey"] : "";
+                consumerSecret = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwConsumerSecret"]) ? ConfigurationManager.AppSettings["cwConsumerSecret"] : "";
+                additionalVal = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwClientID"]) ? ConfigurationManager.AppSettings["cwClientID"] : "";
+            }
+            else if (apiName == "VeloCloud")
+            {
+                baseURL = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoBaseURL"]) ? ConfigurationManager.AppSettings["vcoBaseURL"] : "";
+                consumerKey = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoConsumerKey"]) ? ConfigurationManager.AppSettings["vcoConsumerKey"] : "";
+                consumerSecret = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoConsumerSecret"]) ? ConfigurationManager.AppSettings["vcoConsumerSecret"] : "";
+                additionalVal = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoLoginURL"]) ? ConfigurationManager.AppSettings["vcoLoginURL"] : "";
+            }
 
-            var records = Database.ExecuteQuery("SELECT consumerKey, consumerSecret, baseUrl, description FROM apis WHERE apiName='" + apiName + "' LIMIT 1", "cnnPM");
-            foreach (var entry in records)
-            {
-                apiInfo.Add((string)entry.Value["consumerKey"]);
-                apiInfo.Add((string)entry.Value["consumerSecret"]);
-                apiInfo.Add((string)entry.Value["baseUrl"]);
-                apiInfo.Add((string)entry.Value["description"]);
-            }
-            if (apiInfo.Count == 0)
-            {
-                apiInfo.Add("");
-                apiInfo.Add("");
-                apiInfo.Add("");
-                apiInfo.Add("");
-            }
+            List<string> apiInfo = new List<string>();
+            apiInfo.Add(consumerKey);
+            apiInfo.Add(consumerSecret);
+            apiInfo.Add(baseURL);
+            apiInfo.Add(additionalVal);
+
             return apiInfo;
         }
 
