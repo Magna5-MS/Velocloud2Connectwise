@@ -16,7 +16,7 @@ namespace Velocloud2Connectwise
                 {
                     Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'Start Syncing', GETDATE(), 0)", "cnnProduction");
                     Helper h = new Helper();
-                    h.SyncCompanies();
+                    h.SyncCompaniesObj();
                     Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'End Syncing', GETDATE(), 0)", "cnnProduction");
                     //Console.ReadLine();
                 }
