@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  velocloud2connectwise:
+    image: ${DOCKER_REGISTRY-}velocloud2connectwise
+    build:
+      context: .
+      dockerfile: Velocloud2Connectwise/Dockerfile
