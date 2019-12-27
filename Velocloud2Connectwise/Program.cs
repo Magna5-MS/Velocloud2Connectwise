@@ -1,68 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using Magna5.Utilities;
-
+using System.Net;
+using Velocloud2Connectwise.Core;
+using System.Threading;
+using System.Configuration;
+using Prometheus;
 namespace Velocloud2Connectwise
 {
     class Program
     {
+        static HttpListener listener;
+        static Thread listenerThread;
+
         static void Main(string[] args)
         {
-            int action = 1; // debug modes
+            ThreadPool.QueueUserWorkItem(delegate { HandleNetRequests(); });
+            ThreadPool.QueueUserWorkItem(delegate { JobTimer(); });
+            ThreadPool.QueueUserWorkItem(delegate { StatTimer(); });
+            Console.ReadLine();
+        }
 
-            if (action == 1) // run the program
+        public static void HandleNetRequests()
+        {
+            listener = new HttpListener();
+            listener.Prefixes.Add(@"http://+:8077/");
+            listener.Start();
+            while (listener.IsListening)
             {
-                try
-                {
-                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'Start Syncing', GETDATE(), 0)", "cnnProduction");
-                    Helper h = new Helper();
-                    h.SyncCompaniesObj();
-                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', 'End Syncing', GETDATE(), 0)", "cnnProduction");
-                    //Console.ReadLine();
-                }
-                catch (Exception e)
-                {
-                    string msg = e.ToString().Replace("'", "");
-                    //Console.WriteLine(msg);
-                    //Console.ReadLine();
-                    Database.ExecuteNonQuery("INSERT INTO PRODUCTION.dbo.applicationLog(appName, appId, note, d, error) VALUES('VCO2CW', 'VCO2CW', '" + msg + "', GETDATE(), 1)", "cnnProduction");
-                }
+                var context = listener.BeginGetContext(new AsyncCallback(ListenerCallback), listener);
+                context.AsyncWaitHandle.WaitOne();
             }
-            else if (action == 100) // print a list of CW companies
+        }
+        private static void ListenerCallback(IAsyncResult ar)
+        {
+            Console.WriteLine("Callback detected...");
+            // var listener = ar.AsyncState as HttpListener;
+            //var context = listener.EndGetContext(ar);
+            SyncController.Execute(1);
+        }
+
+        static void JobTimer()
+        {
+            while (true)
             {
-                CwAPI cw = new CwAPI();
-                List<KeyValuePair<string, string>> cwCompanies = cw.GetCompanies();
-                foreach (KeyValuePair<string, string> cwCompany in cwCompanies)
-                    Console.WriteLine(cwCompany.Value + " // " + cwCompany.Key);
+                Thread.Sleep(Convert.ToInt32(ConfigurationManager.AppSettings["jobTimer"]) * 60 * 1000);
+                Console.WriteLine("Job timer elapsed");
+                SyncController.Execute(1);
             }
-            else if (action == 101) // count CW companies
+            
+        }
+        private static readonly Counter TickTock = Metrics.CreateCounter("velocloud2connectwise_ticks_total", "Velocloud2Connectwise sync console app ticks total");
+        static void StatTimer()
+        {
+            var server = new MetricServer(hostname: ConfigurationManager.AppSettings["prometheusServer"],
+                                          port: Convert.ToInt32(ConfigurationManager.AppSettings["prometheusPort"]));
+
+            server.Start();
+            while (true)
             {
-                CwAPI cw = new CwAPI();
-                Console.WriteLine(cw.CountCompanies());
-                Console.ReadLine();
-            }
-            else if (action == 102) // print company's json by id
-            {
-                CwAPI cw = new CwAPI();
-                Console.WriteLine(cw.GetCompany(19497));
-                Console.ReadLine();
-            }
-            else if (action == 200) // print a list of VCO companies
-            {
-                string id = "0", vcoName = "";
-                VcoAPI vco = new VcoAPI();
-                List<List<string>> vcoCompanies = vco.GetCompanies();
-                foreach (List<string> thisVcoCompany in vcoCompanies) {
-                    int i = 0;
-                    foreach (string item in thisVcoCompany) {
-                        i++;
-                        if (i == 1) id = item;
-                        else if (i == 2) vcoName = item;
-                    }
-                    Console.WriteLine(vcoName);
-                    Console.WriteLine(id);
-                    Console.WriteLine("---------------------");
-                }
+                TickTock.Inc();
+                Thread.Sleep(TimeSpan.FromSeconds(1));
             }
         }
     }
