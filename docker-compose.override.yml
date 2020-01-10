@@ -1,1 +1,17 @@
 version: '3.4'
+
+services:
+  velocloud2connectwise:
+    environment:
+        - triggerPort=8077
+        - prometheusPort=9700
+        - jobTimer=180
+        - cwBaseURL=https://na.myconnectwise.net/v4_6_release/apis/3.0/
+        - cwConsumerKey=WElqfwuw091OERQp
+        - cwConsumerSecret=jI87DQT0Jed1UqBV
+        - cwClientID=c7b06b83-e581-4693-98eb-1aa250a65435
+        - vcoBaseURL=https://vco160-usca1.velocloud.net/portal/rest/
+        - vcoConsumerKey=api@magna5global.com
+        - vcoConsumerSecret=WrwleCHn^e83@5lX
+        - vcoLoginURL=https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin
+        - emailReportTo=growe@magna5global.com

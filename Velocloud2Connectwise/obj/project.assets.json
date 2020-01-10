@@ -5630,11 +5630,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
+      "projectUniqueName": "/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
       "projectName": "Velocloud2Connectwise",
-      "projectPath": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
+      "projectPath": "/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise.csproj",
       "packagesPath": "/Users/gregro/.nuget/packages/",
-      "outputPath": "/Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/obj/",
+      "outputPath": "/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

@@ -1,3 +1,4 @@
+
 FROM mcr.microsoft.com/dotnet/core/runtime:2.1-stretch-slim AS base
 WORKDIR /app
 
@@ -15,4 +16,5 @@ RUN dotnet publish "Velocloud2Connectwise.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+EXPOSE 1234
 ENTRYPOINT ["dotnet", "Velocloud2Connectwise.dll"]

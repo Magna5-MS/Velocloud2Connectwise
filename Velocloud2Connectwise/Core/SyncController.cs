@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Velocloud2Connectwise.Models;
 namespace Velocloud2Connectwise.Core
 {
     public static class SyncController
     {
-        public static void Execute(int action)
+        public static SyncResult Execute(int action)
         {
+            
             if (action == 1) // run the program
             {
-                try
-                {
-                    Console.WriteLine("STARTING Velocloud to Connectwise Sync");
-                    Helper h = new Helper();
-                    h.SyncCompaniesObj();
-                    Console.WriteLine("Velocloud to Connectwise Sync FINISHED");
-                }
-                catch (Exception e)
-                {
-                    Console.Write("ERROR in SyncCompaniesObj(): " + e.Message);
-                }
+                Console.WriteLine("STARTING Velocloud to Connectwise Sync");
+                Helper h = new Helper();
+                h.SyncCompaniesObj();
+                Console.WriteLine("Velocloud to Connectwise Sync FINISHED");
+                return h.syncResults;
             }
             else if (action == 100) // print a list of CW companies
             {
@@ -57,7 +53,7 @@ namespace Velocloud2Connectwise.Core
                     Console.WriteLine("---------------------");
                 }
             }
-            return;
+            return null;
         }
     }
 }

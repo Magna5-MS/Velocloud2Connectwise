@@ -63,3 +63,16 @@ C:/Users/OldServer/Downloads/Velocloud2Connectwise/Velocloud2Connectwise/Veloclo
 C:/Users/OldServer/Downloads/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.dll
 C:/Users/OldServer/Downloads/Velocloud2Connectwise/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.pdb
 /Users/gregro/SourceCode/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.csprojAssemblyReference.cache
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.dll.config
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.deps.json
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.runtimeconfig.json
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.runtimeconfig.dev.json
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.dll
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/bin/Debug/netcoreapp2.1/Velocloud2Connectwise.pdb
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.csprojAssemblyReference.cache
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.Properties.Resources.resources
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.csproj.GenerateResource.cache
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.AssemblyInfoInputs.cache
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.AssemblyInfo.cs
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.dll
+/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/obj/Debug/netcoreapp2.1/Velocloud2Connectwise.pdb

@@ -8,17 +8,38 @@ namespace Velocloud2Connectwise
 {
     class Helper
     {
+        public SyncResult syncResults { get; set; }
         /// <summary>
         /// Get VCO and CW companies as objects, add missing ones to CW
         /// </summary>
         public void SyncCompaniesObj()
         {
-            int added = 0;
+            syncResults = new SyncResult();
             CwAPI cw = new CwAPI();
             VcoAPI vco = new VcoAPI();
-            List<VcoCompany> lstVcoCompanies = vco.GetCompaniesObject();
-            List<CwCompany> lstCwCompanies = cw.GetCompaniesObject();
+            List<VcoCompany> lstVcoCompanies;
+            List<CwCompany> lstCwCompanies;
+
+            try
+            {
+                lstVcoCompanies = vco.GetCompaniesObject();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error retrieving velocloud companies: " + ex.Message);
+            }
+
+            try
+            {
+                lstCwCompanies = cw.GetCompaniesObject();
+            }            
+            catch(Exception ex)
+            {
+                throw new Exception("Error retrieving connectwise companies: " + ex.Message);
+            }
+
             List<CwCompany> lstMatches = null;
+            
             foreach (VcoCompany company in lstVcoCompanies)
             {
                 Console.WriteLine("VcoID: " + company.id);
@@ -32,42 +53,40 @@ namespace Velocloud2Connectwise
                                 (i.name == company.name) || i.identifier == MakeIdentifier(company.name)
                             );
                 if (lstMatches.Count == 0)
-                {
                     company.containsMatch = false;
-                    // Did not find a match
-                    Console.WriteLine("VCO company not found in CW, let's use CW API to POST it there.");
-                    string cwPost = cw.PostCompany(company.name,
-                        company.streetAddress,
-                        company.streetAddress2,
-                        company.city,
-                        company.state,
-                        company.postalCode,
-                        company.accountNumber,
-                        company.contactPhone);
-                    Console.WriteLine(cwPost);
-                    added++;
-                }
                 else
                     Console.WriteLine("VCO company found in CW.");
             }
 
-            if (added > 0)
-            {
-                List<VcoCompany> lstUnmatched = null;
-                lstUnmatched = lstVcoCompanies.FindAll(i => i.containsMatch == false);
+            // Now take a look at our unmatched companies and send email if necessary
 
-                // Send email report of all unmatched companies
-                string emailBody = "The following VeloCloud companies could not be found in ConnectWise and have been added.<br /><br />";
-                foreach(VcoCompany company in lstUnmatched)
+            List<VcoCompany> lstUnmatched = null;
+            lstUnmatched = lstVcoCompanies.FindAll(i => i.containsMatch == false);
+
+            syncResults.totalAccount = lstVcoCompanies.Count;
+            syncResults.totalUnmatched = lstUnmatched.Count;
+            
+
+            // Send email report of all unmatched companies
+            if (syncResults.totalUnmatched > 0)
+            {
+                string emailBody = "The following VeloCloud companies could not be found in ConnectWise. Please verify the name and that the company exists in ConnectWise.<br /><br />";
+                foreach (VcoCompany company in lstUnmatched)
                 {
                     emailBody += company.name + " (" + company.id + ")<br />";
                 }
-                Magna5.Utilities.Mail.SendEmail("growe@magna5global.com", "donotreply@magna5global.com", "VeloCloud - New Accounts Synced", emailBody, null, null, true);
+                try
+                {
+                    Magna5.Utilities.Mail.SendEmail(Environment.GetEnvironmentVariable("emailReportTo"), "donotreply@magna5global.com", "VeloCloud - New Accounts Synced", emailBody, null, null, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error sending synced account email: " + ex.Message);
+                }
+
+                Console.WriteLine(lstUnmatched.Count.ToString() + " unmatched compan" + (lstUnmatched.Count == 1 ? "y" : "ies") + " in VeloCloud that are not in ConnectWise.");
             }
-
-
-
-            Console.WriteLine(added.ToString() + " new compan" + (added == 1 ? "y" : "ies") + " added to CW.");
+        
         }
         /// <summary>
         /// Get VCO and CW companies, add missing ones to CW
@@ -150,17 +169,17 @@ namespace Velocloud2Connectwise
             string baseURL = "", consumerKey = "", consumerSecret = "", additionalVal = "";
             if (apiName == "ConnectWise")
             {
-                baseURL = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwBaseURL"]) ? ConfigurationManager.AppSettings["cwBaseURL"] : "";
-                consumerKey = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwConsumerKey"]) ? ConfigurationManager.AppSettings["cwConsumerKey"] : "";
-                consumerSecret = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwConsumerSecret"]) ? ConfigurationManager.AppSettings["cwConsumerSecret"] : "";
-                additionalVal = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["cwClientID"]) ? ConfigurationManager.AppSettings["cwClientID"] : "";
+                baseURL = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("cwBaseURL")) ? Environment.GetEnvironmentVariable("cwBaseURL") : "";
+                consumerKey = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("cwConsumerKey")) ? Environment.GetEnvironmentVariable("cwConsumerKey") : "";
+                consumerSecret = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("cwConsumerSecret")) ? Environment.GetEnvironmentVariable("cwConsumerSecret") : "";
+                additionalVal = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("cwClientID")) ? Environment.GetEnvironmentVariable("cwClientID") : "";
             }
             else if (apiName == "VeloCloud")
             {
-                baseURL = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoBaseURL"]) ? ConfigurationManager.AppSettings["vcoBaseURL"] : "";
-                consumerKey = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoConsumerKey"]) ? ConfigurationManager.AppSettings["vcoConsumerKey"] : "";
-                consumerSecret = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoConsumerSecret"]) ? ConfigurationManager.AppSettings["vcoConsumerSecret"] : "";
-                additionalVal = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["vcoLoginURL"]) ? ConfigurationManager.AppSettings["vcoLoginURL"] : "";
+                baseURL = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("vcoBaseURL")) ? Environment.GetEnvironmentVariable("vcoBaseURL") : "";
+                consumerKey = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("vcoConsumerKey")) ? Environment.GetEnvironmentVariable("vcoConsumerKey") : "";
+                consumerSecret = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("vcoConsumerSecret")) ? Environment.GetEnvironmentVariable("vcoConsumerSecret") : "";
+                additionalVal = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("vcoLoginURL")) ? Environment.GetEnvironmentVariable("vcoLoginURL") : "";
             }
 
             List<string> apiInfo = new List<string>();
