@@ -17,13 +17,13 @@
           "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
         ],
         "configFilePaths": [
+          "/Users/gregro/SourceCode/magna5/Velocloud2Connectwise/Velocloud2Connectwise/NuGet.Config",
           "/Users/gregro/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
         ],
         "sources": {
-          "http://apidev.magna5global.com:81/nuget": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -40,10 +40,6 @@
       "frameworks": {
         "netcoreapp2.1": {
           "dependencies": {
-            "Magna5.Utilities": {
-              "target": "Package",
-              "version": "[2.0.0, )"
-            },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",
               "version": "[2.2.2, )"
@@ -65,6 +61,14 @@
             "RestSharp": {
               "target": "Package",
               "version": "[106.6.10, )"
+            },
+            "Sentry": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "ServiceStack.Text.Core": {
+              "target": "Package",
+              "version": "[5.8.0, )"
             },
             "System.Configuration.ConfigurationManager": {
               "target": "Package",

@@ -14,22 +14,29 @@ namespace Velocloud2Connectwise
 
         static void Main(string[] args)
         {
-           
             server.Start();
+#if DEBUG
+            SyncController.Execute();
+#else
+            SetupThreads();
+            // Put main thread to sleep to stay alive in docker
+            Thread.Sleep(Timeout.Infinite);
+#endif
+
+        }
+        public static void SetupThreads(){
             Thread threadNetRequests = new Thread(HandleNetRequests) { IsBackground = true };
             Thread threadJobTimer = new Thread(JobTimer) { IsBackground = true };
             Thread threadCounter = new Thread(StatTimer) { IsBackground = true };
-            
             threadNetRequests.Start();
             threadJobTimer.Start();
             threadCounter.Start();
-
-            Console.ReadLine();
-
+            
         }
 
         public static void HandleNetRequests()
         {
+            Console.WriteLine(String.Format("Setting up listener on port {0}", Environment.GetEnvironmentVariable("triggerPort")));
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add(@"http://+:" + Environment.GetEnvironmentVariable("triggerPort") + "/");
             listener.Start();
@@ -44,17 +51,18 @@ namespace Velocloud2Connectwise
             Console.WriteLine("Callback detected...");
             // var listener = ar.AsyncState as HttpListener;
             //var context = listener.EndGetContext(ar);
-            ExecuteSync();
+            SyncController.Execute();
         }
 
         static void JobTimer()
         {
+            Console.WriteLine(String.Format("Setting up timer with value {0}", Environment.GetEnvironmentVariable("jobTimer")));
             var counterJobElapsed = Metrics.CreateCounter("velocloud2connectwise_job_elapsed", "Elapsed Job Sync");
             while (true)
             {
                 Thread.Sleep(Convert.ToInt32(Environment.GetEnvironmentVariable("jobTimer")) * 60 * 1000);
                 Console.WriteLine("Job timer elapsed");
-                ExecuteSync();
+                SyncController.Execute();
                 counterJobElapsed.Inc();
             }
             
@@ -69,31 +77,6 @@ namespace Velocloud2Connectwise
                 counterTicks.Inc();
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
-        }
-        static void ExecuteSync()
-        {
-            // Setup Prometheus gauges
-            Gauge totalAccounts = Metrics.CreateGauge("velocloud2connectwise_account_total", "Total Velocloud customer accounts",
-                 new GaugeConfiguration
-                 {
-                     LabelNames = new[] { "status" }
-                 });
-            Gauge counterError = Metrics.CreateGauge("velocloud2connectwise_error", "Velocloud2Connectwise sync errors");
-
-            SyncResult result;
-            try
-            {
-                result = SyncController.Execute(1);
-                totalAccounts.WithLabels("success").IncTo(result.totalAccount);
-                totalAccounts.WithLabels("unmatched").IncTo(result.totalUnmatched);
-                totalAccounts.WithLabels("error").IncTo(result.totalErred); // Error count for CW sync-backs, not yet done
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error executing sync: " + ex.Message);
-                counterError.Inc(1);
-            }
-            return;
         }
     }
 }

@@ -3,11 +3,43 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using System.Web;
+using System.Net.Http.Headers;
+
+using System.Linq;
 using Velocloud2Connectwise.Models;
 
-namespace Velocloud2Connectwise
+namespace Velocloud2Connectwise.ConnectWise
 {
-    class CwAPI
+    public static class Endpoints
+    {
+        public static string GetCompanies(int pageSize, string conditions = "" )
+        {
+            return string.Format("company/companies?pageSize={0}&conditions={1}", pageSize, HttpUtility.UrlEncode(conditions));
+        }
+        public static string GetProductItems()
+        {
+            return "procurement/products";
+        }
+        public static string GetConfigurations(int pageSize, int page, string conditions = "")
+        {
+            return String.Format("company/configurations?pageSize={0}&page={1}&conditions={2}", pageSize, page, HttpUtility.UrlEncode(conditions));
+        }
+        public static string GetConfigurationTypes()
+        {
+            return "/company/configurations/types";
+        }
+        public static string AddConfiguration()
+        {
+            return "/company/configurations";
+        }
+        public static string GetManufacturers()
+        {
+            return "/procurement/manufacturers";
+        }
+    }
+
+    class Api
     {
         private string publicKey;
         private string privateKey;
@@ -15,81 +47,95 @@ namespace Velocloud2Connectwise
         private string clientId;
         private string auth;
 
-        public CwAPI()
+        public Api()
         {
-            List<string> apiInfo = Helper.GetApiInfo("ConnectWise");
+            List<string> apiInfo = Sync.GetApiInfo("ConnectWise");
             publicKey = apiInfo[0];
             privateKey = apiInfo[1];
             baseURL = apiInfo[2];
             clientId = apiInfo[3];  // description
             auth = Base64Encode("Magna5+" + publicKey + ":" + privateKey);
         }
+        public List<Models.ConnectWise.Manufacturer> GetManufacturers()
+        {
+            var client = new RestClient(baseURL);
+            var request = new RestRequest(Endpoints.GetManufacturers());
+            SetRestRequest(ref request, "");
+            var response = client.Get<List<Models.ConnectWise.Manufacturer>>(request);
+            return response.Data;
+        }
+        public List<Models.ConnectWise.Company> GetCompanies(string conditions)
+        {
+            int pageSize = CountCompanies();
+            var client = new RestClient(baseURL);
+            var request = new RestRequest(Endpoints.GetCompanies(pageSize, conditions));
+            SetRestRequest(ref request, "");
+            var response = client.Get<List<Models.ConnectWise.Company>>(request);
+            return response.Data;
+        }
+
+        public List<Models.ConnectWise.IdNameInfo> GetConfigurationTypes()
+        {
+            var client = new RestClient(baseURL);
+            var request = new RestRequest(Endpoints.GetConfigurationTypes());
+            SetRestRequest(ref request, "");
+            var response = client.Get<List<Models.ConnectWise.IdNameInfo>>(request);
+            return response.Data;
+        }
+        public List<Models.ConnectWise.Configuration> GetConfigurations(string conditions)
+        {
+            var client = new RestClient(baseURL);
+            List<Models.ConnectWise.Configuration> configs = new List<Models.ConnectWise.Configuration>();
+
+            int page = 1;
+            int pageSize = 500;
+            bool getNextPage = true;
+            while (getNextPage)
+            {
+                var request = new RestRequest(Endpoints.GetConfigurations(pageSize, page, conditions));
+                SetRestRequest(ref request, "");
+                var response = client.Get<List<Models.ConnectWise.Configuration>>(request);
+                if (response.Data.Count < pageSize)
+                    getNextPage = false;
+                page += 1;
+                configs.AddRange(response.Data);
+            }
+            return configs;
+        }
         /// <summary>
         /// Get a list of cwCompany object (identifier=>name)
         /// </summary>
-        public List<CwCompany> GetCompaniesObject()
+        public List<Models.ConnectWise.Company> GetCompaniesObject()
         {
-            if (this.clientId == "")
-                return null;
-            string pageSize = CountCompanies(); // 202
 
+            int pageSize = CountCompanies(); 
             var client = new RestClient(baseURL);
-            var request = new RestRequest("company/companies?pageSize=" + pageSize);
-            request.AddHeader("clientId", clientId);
-            request.AddHeader("Authorization", "Basic " + auth);
-            var response = client.Get(request);
-            var content = response.Content;
-
-            if (content.IndexOf("Unauthorized") >= 0)
-                return null;
-            List<CwCompany> lstCompanies = JsonConvert.DeserializeObject<List<CwCompany>>(content);
-            return lstCompanies;
-            
-            
-        }
-        /// <summary>
-        /// Get a list of CW companies (identifier=>name)
-        /// </summary>
-        public List<KeyValuePair<string, string>> GetCompanies()
-        {
-            string info = "";
-            //var companies = new List<string>();
-            var companies = new List<KeyValuePair<string, string>>();
-
-            if (clientId != "")
+            var request = new RestRequest(Endpoints.GetCompanies(pageSize));
+            SetRestRequest(ref request, "");
+            var response = client.Get<List<Models.ConnectWise.Company>>(request);
+            if (response.ErrorException != null)
             {
-                string pageSize = CountCompanies(); // 202
-
-                var client = new RestClient(baseURL);
-                var request = new RestRequest("company/companies?pageSize="+ pageSize);
-                request.AddHeader("clientId", clientId);
-                request.AddHeader("Authorization", "Basic " + auth);
-                var response = client.Get(request);
-                var content = response.Content;
-
-                if (content.IndexOf("Unauthorized") >= 0)
-                    info = "Incorrect public/private keys";
-                else
-                {
-                    JArray jsonArray = JArray.Parse(content);
-                    for (int j = 0; j < jsonArray.Count; j++)
-                    {
-                        string id = (string)jsonArray[j]["id"];
-                        string name = (string)jsonArray[j]["name"];
-                        string identifier = (string)jsonArray[j]["identifier"];
-                        companies.Add(new KeyValuePair<string, string>(identifier, name));
-                    }
-                }
+                throw new Exception(String.Format("Error in GetCompaniesObject(): {0}", response.ErrorMessage));
             }
-            else
-                info = "Keys not found.";
-
-            if (info != "")
-                companies.Add(new KeyValuePair<string, string>(info, ""));
-            
-            return companies;
+            return response.Data;
         }
-
+        public Models.ConnectWise.Configuration AddConfiguration(Models.ConnectWise.Configuration configuration)
+        {
+            var client = new RestClient(baseURL);
+            var request = new RestRequest(Endpoints.AddConfiguration());
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            SetRestRequest(ref request, JsonConvert.SerializeObject(configuration, settings));
+            var response = client.Post<Models.ConnectWise.Configuration>(request);
+            if (response.ErrorException != null)
+            {
+                throw new Exception(String.Format("Error in AddConfiguration(): {0}", response.ErrorMessage));
+            }
+            return response.Data;
+        }
         /// <summary>
         /// Add a new company to CW
         /// </summary>
@@ -98,7 +144,7 @@ namespace Velocloud2Connectwise
            
             if (clientId != "")
             {
-                string identifier = Helper.MakeIdentifier(name);
+                string identifier = Sync.MakeIdentifier(name);
                 var payload = new{
                     name = name,
                     identifier = identifier,
@@ -152,7 +198,7 @@ namespace Velocloud2Connectwise
         /// <summary>
         /// Get the number of existing companies
         /// </summary>
-        public string CountCompanies()
+        public int CountCompanies()
         {
             string info = "";
             if (clientId != "")
@@ -175,7 +221,7 @@ namespace Velocloud2Connectwise
             }
             else
                 info = "Keys not found.";
-            return info;
+            return Convert.ToInt32(info);
         }
 
         /// <summary>
@@ -204,6 +250,15 @@ namespace Velocloud2Connectwise
                 info = "Keys not found.";
 
             return info;
+        }
+
+        public void SetRestRequest(ref RestRequest request, string jsonBody)
+        {
+            request.AddHeader("clientId", clientId);
+            request.AddHeader("Authorization", "Basic " + auth);
+            request.AddHeader("Accept", "application/json");
+            if (jsonBody != "")
+                request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
         }
 
         public static string Base64Encode(string plainText)

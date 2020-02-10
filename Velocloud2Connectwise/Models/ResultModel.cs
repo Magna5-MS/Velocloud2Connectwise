@@ -6,8 +6,10 @@ namespace Velocloud2Connectwise.Models
         public SyncResult()
         {
         }
-        public int totalAccount { get; set; } = 0;
+        public string syncType { get; set; } // customer/inventory
+        public int totalRecords { get; set; } = 0;
         public int totalUnmatched { get; set; } = 0;
         public int totalErred { get; set; } = 0;
+        public int totalSync { get; set; } = 0;
     }
 }

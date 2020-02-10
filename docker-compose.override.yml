@@ -15,3 +15,4 @@ services:
         - vcoConsumerSecret=WrwleCHn^e83@5lX
         - vcoLoginURL=https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin
         - emailReportTo=growe@magna5global.com
+        - smtpRelay=mailrelay.magna5global.com

@@ -19,6 +19,7 @@
       <Variable name="cwClientID" value="c7b06b83-e581-4693-98eb-1aa250a65435" xmlns="" />
       <Variable name="emailReportTo" value="growe@magna5global.com" xmlns="" />
       <Variable name="triggerPort" value="8077" xmlns="" />
+      <Variable name="smtpRelay" value="" xmlns="" />
     </EnvironmentVariables>
   </PropertyGroup>
 </Project>
