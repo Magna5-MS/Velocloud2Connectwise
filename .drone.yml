@@ -1,0 +1,23 @@
+kind: pipeline
+name: Deploy
+
+steps:
+- name: docker  
+  image: plugins/docker
+  settings:
+    tags: latest
+    auto_tag: true
+    dry_run: false
+    dockerfile: Velocloud2Connectwise/Dockerfile
+    repo: registry.m5.run/velocloud2connectwise
+    registry: registry.m5.run
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+
+trigger:
+  branch:
+    - master
+  event:
+    - tag
