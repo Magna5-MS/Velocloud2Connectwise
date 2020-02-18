@@ -7,7 +7,6 @@
     <StartAction>Project</StartAction>
     <ExternalConsole>true</ExternalConsole>
     <EnvironmentVariables>
-      <Variable name="prometheusPort" value="1234" xmlns="" />
       <Variable name="jobTimer" value="180" xmlns="" />
       <Variable name="cwBaseURL" value="https://na.myconnectwise.net/v4_6_release/apis/3.0/" xmlns="" />
       <Variable name="cwConsumerKey" value="WElqfwuw091OERQp" xmlns="" />
@@ -18,8 +17,8 @@
       <Variable name="vcoLoginURL" value="https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin" xmlns="" />
       <Variable name="cwClientID" value="c7b06b83-e581-4693-98eb-1aa250a65435" xmlns="" />
       <Variable name="emailReportTo" value="growe@magna5global.com" xmlns="" />
-      <Variable name="triggerPort" value="8077" xmlns="" />
       <Variable name="smtpRelay" value="" xmlns="" />
+      <Variable name="httpPort" value="8077" xmlns="" />
     </EnvironmentVariables>
   </PropertyGroup>
 </Project>

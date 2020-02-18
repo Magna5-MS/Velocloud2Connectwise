@@ -3,8 +3,7 @@ version: '3.4'
 services:
   velocloud2connectwise:
     environment:
-        - triggerPort=8077
-        - prometheusPort=9700
+        - httpPort=8077
         - jobTimer=180
         - cwBaseURL=https://na.myconnectwise.net/v4_6_release/apis/3.0/
         - cwConsumerKey=WElqfwuw091OERQp

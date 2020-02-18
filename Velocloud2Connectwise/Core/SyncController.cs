@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using Velocloud2Connectwise.Models;
 using Prometheus;
 using Sentry;
+using System.Threading;
 namespace Velocloud2Connectwise.Core
 {
     public static class SyncController
     {
+        public static SyncResult CustomerResult { get; set; }
+        public static SyncResult InventoryResult { get; set; }
+        static Semaphore s = new Semaphore(1, 1);   // Will ensure that threads running Execute() method will run one at a time, in case triggered multiple times at once
+
         public static void ExportTest()
         {
             ConnectWise.Api cw = new ConnectWise.Api();
@@ -27,8 +32,11 @@ namespace Velocloud2Connectwise.Core
         /// <returns>Sync Result object with total records, total unmatched, total synced & total errors.</returns>
         public static void Execute(string filteredCompanyName = "")
         {
-            using (SentrySdk.Init("https://da4d4d6ac04e4f858a1a2707c8b4fa14@sentry.io/2239777"))
+
+            using (SentrySdk.Init())
             {
+                s.WaitOne();
+
                 Console.WriteLine("STARTING Velocloud to Connectwise Sync");
 
                 // Setup Prometheus gauges
@@ -52,6 +60,7 @@ namespace Velocloud2Connectwise.Core
                 try
                 {
                     companies = sync.SyncCompanyData(filteredCompanyName);
+                    CustomerResult = sync.syncResults["customer"];
                     totalCustomerSync.WithLabels("success").IncTo(sync.syncResults["customer"].totalRecords);
                     totalCustomerSync.WithLabels("unmatched").IncTo(sync.syncResults["customer"].totalUnmatched);
                     totalCustomerSync.WithLabels("error").IncTo(sync.syncResults["customer"].totalErred);
@@ -70,6 +79,7 @@ namespace Velocloud2Connectwise.Core
                     {
                         // Use the list of companies from previous call to retrieve inventory data and sync to ConnectWise
                         sync.SyncInventory(companies);
+                        InventoryResult = sync.syncResults["inventory"];
                         totalInventorySync.WithLabels("success").IncTo(sync.syncResults["inventory"].totalRecords);
                         totalInventorySync.WithLabels("unmatched").IncTo(sync.syncResults["inventory"].totalUnmatched);
                         totalInventorySync.WithLabels("synced").IncTo(sync.syncResults["inventory"].totalSync);
@@ -88,6 +98,7 @@ namespace Velocloud2Connectwise.Core
                 }
 
                 Console.WriteLine("Velocloud to Connectwise Sync FINISHED");
+                s.Release();
                 return;
             }
         }

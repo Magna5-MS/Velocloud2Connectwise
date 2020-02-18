@@ -10,16 +10,16 @@ namespace Velocloud2Connectwise
     class Program
     {
 
-        static MetricServer server = new MetricServer(port: Convert.ToInt32(Environment.GetEnvironmentVariable("prometheusPort")));
+        static MetricServer server = new MetricServer(port: Convert.ToInt32(Environment.GetEnvironmentVariable("httpPort")));
 
         static void Main(string[] args)
         {
             server.Start();
 #if DEBUG
-            SyncController.Execute();
+            SetupThreads();
+            Thread.Sleep(Timeout.Infinite);
 #else
             SetupThreads();
-            // Put main thread to sleep to stay alive in docker
             Thread.Sleep(Timeout.Infinite);
 #endif
 
@@ -31,14 +31,13 @@ namespace Velocloud2Connectwise
             threadNetRequests.Start();
             threadJobTimer.Start();
             threadCounter.Start();
-            
         }
 
         public static void HandleNetRequests()
         {
-            Console.WriteLine(String.Format("Setting up listener on port {0}", Environment.GetEnvironmentVariable("triggerPort")));
+            Console.WriteLine(String.Format("Setting up listener on port {0}", Environment.GetEnvironmentVariable("httpPort")));
             HttpListener listener = new HttpListener();
-            listener.Prefixes.Add(@"http://+:" + Environment.GetEnvironmentVariable("triggerPort") + "/");
+            listener.Prefixes.Add(@"http://+:" + Environment.GetEnvironmentVariable("httpPort") + "/");
             listener.Start();
             while (listener.IsListening)
             {
@@ -48,10 +47,39 @@ namespace Velocloud2Connectwise
         }
         private static void ListenerCallback(IAsyncResult ar)
         {
-            Console.WriteLine("Callback detected...");
-            // var listener = ar.AsyncState as HttpListener;
-            //var context = listener.EndGetContext(ar);
-            SyncController.Execute();
+            HttpListener l = (HttpListener)ar.AsyncState;
+            HttpListenerContext context = l.EndGetContext(ar);
+            HttpListenerRequest request = context.Request;
+
+            // Most browser make 2 requests, 1 specifically for favicon
+            string response = "";
+            if (request.RawUrl == "/trigger")
+            {
+
+                Console.WriteLine("Callback detected...");
+                new Thread((Object state) =>
+                        {
+                            SyncController.Execute();
+                        }).Start();
+
+                response = "Beginning customer and inventory sync between Velocloud and ConnectWise";
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(response);
+                context.Response.ContentLength64 = buffer.Length;
+                System.IO.Stream output = context.Response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
+
+                // TODO: Print sync results once finished.
+                //SyncController.Execute();
+                //// Send response
+                //if (SyncController.CustomerResult != null)
+                //{
+                //    response = String.Format("Found {0} unmatched customer accounts from {1} total accounts<br />", SyncController.CustomerResult.totalUnmatched, SyncController.CustomerResult.totalRecords);
+                //    response += String.Format("Synced {0} inventory records from {1} total velocloud inventory<br />", SyncController.InventoryResult.totalSync, SyncController.CustomerResult.totalRecords);
+                //}
+
+            }
+
         }
 
         static void JobTimer()

@@ -2,8 +2,7 @@ FROM mcr.microsoft.com/dotnet/core/runtime:2.1-stretch-slim AS base
 WORKDIR /app
 
 # Set environment variables
-ENV triggerPort=8077
-ENV prometheusPort=9700
+ENV httpPort=8077
 ENV jobTimer=180
 ENV cwBaseURL=https://na.myconnectwise.net/v4_6_release/apis/3.0/
 ENV cwConsumerKey=WElqfwuw091OERQp
@@ -15,6 +14,7 @@ ENV vcoConsumerSecret=WrwleCHn^e83@5lX
 ENV vcoLoginURL=https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin
 ENV emailReportTo=growe@magna5global.com
 ENV smtpRelay=mailrelay.magna5global.com
+ENV SENTRY_DSN=https://da4d4d6ac04e4f858a1a2707c8b4fa14@sentry.io/2239777
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1-stretch AS build
 WORKDIR /src
@@ -33,5 +33,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 EXPOSE 8077
-EXPOSE 9700
 ENTRYPOINT ["dotnet", "Velocloud2Connectwise.dll"]
