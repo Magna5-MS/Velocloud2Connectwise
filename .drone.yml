@@ -29,9 +29,9 @@ steps:
     image: registry.m5.run/velocloud2connectwise:${DRONE_SEMVER}
     dns: vc2cw
     registry: registry.m5.run
-    username:
+    registry_user:
       from_secret: docker_username
-    password:
+    registry_password:
       from_secret: docker_password
 
 trigger:
