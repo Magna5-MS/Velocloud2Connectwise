@@ -28,6 +28,7 @@ steps:
     container_name: vc2cw
     image: registry.m5.run/velocloud2connectwise:${DRONE_SEMVER}
     dns: vc2cw
+    ports: 8077
     registry: registry.m5.run
     registry_user:
       from_secret: docker_username
