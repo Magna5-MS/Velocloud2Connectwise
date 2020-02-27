@@ -39,6 +39,10 @@ namespace Velocloud2Connectwise.Core
 
                 Console.WriteLine("STARTING Velocloud to Connectwise Sync");
 
+                Int32 uxTimeStart = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                Gauge nextSyncTime = Metrics.CreateGauge("velocloud2connectwise_next_sync_time", "Velocloud2Connectwise unix timestamp of next scheduled sync");
+                nextSyncTime.IncTo(uxTimeStart);
+
                 // Setup Prometheus gauges
                 Gauge totalCustomerSync = Metrics.CreateGauge("velocloud2connectwise_account_total", "Total Velocloud customer accounts",
                      new GaugeConfiguration
@@ -50,8 +54,7 @@ namespace Velocloud2Connectwise.Core
                      {
                          LabelNames = new[] { "status" }
                      });
-                Gauge customerSyncError = Metrics.CreateGauge("velocloud2connectwise_customersync_error", "Velocloud2Connectwise customer sync errors");
-                Gauge inventorySyncError = Metrics.CreateGauge("velocloud2connectwise_inventorysync_error", "Velocloud2Connectwise inventory sync errors");
+                Gauge syncError = Metrics.CreateGauge("velocloud2connectwise_errors", "Velocloud2Connectwise sync errors");
 
                 // Execute Sync 
                 Sync sync = new Sync();
@@ -69,7 +72,7 @@ namespace Velocloud2Connectwise.Core
                 {
                     Console.WriteLine("Error executing companies sync: " + ex.Message);
                     SentrySdk.CaptureException(ex);
-                    customerSyncError.Inc(1);
+                    syncError.Inc(1);
                 }
 
 
@@ -89,13 +92,21 @@ namespace Velocloud2Connectwise.Core
                     {
                         Console.WriteLine("Error executing inventory sync: " + ex.Message);
                         SentrySdk.CaptureException(ex);
-                        inventorySyncError.Inc(1);
+                        syncError.Inc(1);
                     }
                 }
                 else
                 {
                     Console.WriteLine("Cannot sync inventory.  Problem retrieving velocloud companies.");
                 }
+
+                Int32 uxTimeEnd = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                Gauge lastSyncTime = Metrics.CreateGauge("velocloud2connectwise_last_sync_time", "Velocloud2Connectwise unix timestamp of last sync");
+                lastSyncTime.IncTo(uxTimeEnd);
+
+                Int32 uxDuration = uxTimeEnd - uxTimeStart;
+                Gauge syncDuration = Metrics.CreateGauge("velocloud2connectwise_sync_duration_seconds", "Velocloud2Connectwise the number of seconds the last sync took to run");
+                syncDuration.IncTo(uxDuration);
 
                 Console.WriteLine("Velocloud to Connectwise Sync FINISHED");
                 s.Release();
