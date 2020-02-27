@@ -62,6 +62,8 @@ namespace Velocloud2Connectwise.ConnectWise
             var request = new RestRequest(Endpoints.GetManufacturers());
             SetRestRequest(ref request, "");
             var response = client.Get<List<Models.ConnectWise.Manufacturer>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Connectwise api error in GetManufacturers(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         public List<Models.ConnectWise.Company> GetCompanies(string conditions)
@@ -71,6 +73,8 @@ namespace Velocloud2Connectwise.ConnectWise
             var request = new RestRequest(Endpoints.GetCompanies(pageSize, conditions));
             SetRestRequest(ref request, "");
             var response = client.Get<List<Models.ConnectWise.Company>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Connectwise api error in GetCompanies(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
 
@@ -80,6 +84,8 @@ namespace Velocloud2Connectwise.ConnectWise
             var request = new RestRequest(Endpoints.GetConfigurationTypes());
             SetRestRequest(ref request, "");
             var response = client.Get<List<Models.ConnectWise.IdNameInfo>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Connectwise api error in GetConfigurationTypes(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         public List<Models.ConnectWise.Configuration> GetConfigurations(string conditions)
@@ -95,6 +101,8 @@ namespace Velocloud2Connectwise.ConnectWise
                 var request = new RestRequest(Endpoints.GetConfigurations(pageSize, page, conditions));
                 SetRestRequest(ref request, "");
                 var response = client.Get<List<Models.ConnectWise.Configuration>>(request);
+                if (!response.IsSuccessful)
+                    throw new Exception("Connectwise api error in GetConfigurations(): (" + response.StatusCode + ") " + response.Content);
                 if (response.Data.Count < pageSize)
                     getNextPage = false;
                 page += 1;
@@ -114,9 +122,9 @@ namespace Velocloud2Connectwise.ConnectWise
             SetRestRequest(ref request, "");
             var response = client.Get<List<Models.ConnectWise.Company>>(request);
             if (response.ErrorException != null)
-            {
                 throw new Exception(String.Format("Error in GetCompaniesObject(): {0}", response.ErrorMessage));
-            }
+            else if (!response.IsSuccessful)
+                throw new Exception("Connectwise api error in GetCompaniesObject(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         public Models.ConnectWise.Configuration AddConfiguration(Models.ConnectWise.Configuration configuration)
@@ -131,9 +139,9 @@ namespace Velocloud2Connectwise.ConnectWise
             SetRestRequest(ref request, JsonConvert.SerializeObject(configuration, settings));
             var response = client.Post<Models.ConnectWise.Configuration>(request);
             if (response.ErrorException != null)
-            {
                 throw new Exception(String.Format("Error in AddConfiguration(): {0}", response.ErrorMessage));
-            }
+            else if (!response.IsSuccessful)
+                throw new Exception("Connectwise api error in AddConfiguration(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         /// <summary>
@@ -166,6 +174,8 @@ namespace Velocloud2Connectwise.ConnectWise
                 request.Method = Method.POST;
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
                 var response = client.Execute(request);
+                if (!response.IsSuccessful)
+                    throw new Exception("Connectwise api error in PostCompany(): (" + response.StatusCode + ") " + response.Content);
                 var content = response.Content; // json structure
 
                 if (content.IndexOf("Unauthorized") >= 0)
@@ -208,19 +218,29 @@ namespace Velocloud2Connectwise.ConnectWise
                 request.AddHeader("clientId", clientId);
                 request.AddHeader("Authorization", "Basic " + auth);
                 var response = client.Get(request);
-                var content = response.Content;
-
-                if (content.IndexOf("Unauthorized") >= 0)
-                    info = "Incorrect public/private keys";
+                if (response.ErrorException != null)
+                    throw new Exception(String.Format("Error in CountCompanies(): {0}", response.ErrorMessage));
+                else if (!response.IsSuccessful)
+                    throw new Exception("Connectwise api error in CountCompanies(): (" + response.StatusCode + ") " + response.Content);
                 else
                 {
-                    JObject jsonObject = JObject.Parse(content);
-                    var count = (string)jsonObject["count"];
-                    info = count;
+                    var content = response.Content;
+                    if (content.IndexOf("Unauthorized") >= 0)
+                        info = "Incorrect public/private keys";
+                    else
+                    {
+                        JObject jsonObject = JObject.Parse(content);
+                        var count = (string)jsonObject["count"];
+                        info = count;
+                    }
                 }
             }
             else
                 info = "Keys not found.";
+
+            if (!info.All(char.IsNumber))
+                info = "0";
+
             return Convert.ToInt32(info);
         }
 
@@ -237,14 +257,16 @@ namespace Velocloud2Connectwise.ConnectWise
                 request.AddHeader("clientId", clientId);
                 request.AddHeader("Authorization", "Basic " + auth);
                 var response = client.Get(request);
-                var content = response.Content;
-
-                if (content.IndexOf("Unauthorized") >= 0)
-                    info = "Incorrect public/private keys";
-                else
-                {
-                    info = content;
+                if (response.IsSuccessful)
+                { 
+                    var content = response.Content;
+                    if (content.IndexOf("Unauthorized") >= 0)
+                        info = "Incorrect public/private keys";
+                    else
+                        info = content;
                 }
+                else
+                    throw new Exception("Connectwise api error in GetCompany(): (" + response.StatusCode + ") " + response.Content);
             }
             else
                 info = "Keys not found.";

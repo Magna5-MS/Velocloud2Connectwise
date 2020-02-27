@@ -81,6 +81,8 @@ namespace Velocloud2Connectwise.Velocloud
             var request = new RestRequest(Endpoints.GetEnterpriseProxyEdgeInventory(), Method.POST);
             SetRestRequest(ref request, string.Empty);
             var response = client.Execute<List<Models.Velocloud.EnterpriseProxyEdgeInventory>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Velocloud api error in GetEnterpriseProxyEdgeInventory(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         /// <summary>
@@ -141,6 +143,8 @@ namespace Velocloud2Connectwise.Velocloud
             var request = new RestRequest(Endpoints.GetInventoryItems(), Method.POST);
             SetRestRequest(ref request, jsonBody);
             var response = client.Execute<List<Models.Velocloud.Inventory>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Velocloud api error in GetInventoryItems(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         /// <summary>
@@ -158,6 +162,8 @@ namespace Velocloud2Connectwise.Velocloud
             var request = new RestRequest(Endpoints.GetEnterpriseProxyEnterprises(), Method.POST);
             SetRestRequest(ref request, jsonBody);
             var response = client.Execute<List<Models.Velocloud.Company>>(request);
+            if (!response.IsSuccessful)
+                throw new Exception("Velocloud api error in GetCompaniesObject(): (" + response.StatusCode + ") " + response.Content);
             return response.Data;
         }
         
@@ -182,6 +188,8 @@ namespace Velocloud2Connectwise.Velocloud
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
                 request.AddCookie("velocloud.session", vcoSession);
                 var response = client.Post(request);
+                if (!response.IsSuccessful)
+                    throw new Exception("Velocloud api error in GetCompanies(): (" + response.StatusCode + ") " + response.Content);
                 var content = response.Content;
 
                 if (content.IndexOf("error") > 0)
