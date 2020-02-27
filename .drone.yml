@@ -26,7 +26,8 @@ steps:
       from_secret: azure_tenant
     resource_group: Servers_Prod_West2
     container_name: vc2cw
-    image: registry.m5.run/velocloud2connectwise:$DRONE_SEMVER
+    image_version: ${DRONE_SEMVER}
+    image: registry.m5.run/velocloud2connectwise
     dns: vc2cw
     ports: 8077
     registry: registry.m5.run
