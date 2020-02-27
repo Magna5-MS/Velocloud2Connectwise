@@ -85,7 +85,7 @@ namespace Velocloud2Connectwise
         static void JobTimer()
         {
             Console.WriteLine(String.Format("Setting up timer with value {0}", Environment.GetEnvironmentVariable("jobTimer")));
-            var counterJobElapsed = Metrics.CreateCounter("velocloud2connectwise_job_elapsed", "Elapsed Job Sync");
+            var counterJobElapsed = Metrics.CreateCounter("velocloud2connectwise_job_count", "Elapsed Job Sync");
             while (true)
             {
                 Thread.Sleep(Convert.ToInt32(Environment.GetEnvironmentVariable("jobTimer")) * 60 * 1000);
