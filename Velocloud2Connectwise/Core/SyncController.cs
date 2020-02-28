@@ -40,8 +40,6 @@ namespace Velocloud2Connectwise.Core
                 Console.WriteLine("STARTING Velocloud to Connectwise Sync");
 
                 Int32 uxTimeStart = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                Gauge nextSyncTime = Metrics.CreateGauge("velocloud2connectwise_next_sync_time", "Velocloud2Connectwise unix timestamp of next scheduled sync");
-                nextSyncTime.IncTo(uxTimeStart);
 
                 // Setup Prometheus gauges
                 Gauge totalCustomerSync = Metrics.CreateGauge("velocloud2connectwise_account_total", "Total Velocloud customer accounts",
