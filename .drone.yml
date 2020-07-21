@@ -37,6 +37,8 @@ steps:
       from_secret: docker_password
     envvars:
       - emailReportTo=helpdesk@magna5global.com
+      - cwConsumerKey=WElqfwuw091OERQp
+      - cwConsumerSecret=jI87DQT0Jed1UqBV
 
 trigger:
   branch:
