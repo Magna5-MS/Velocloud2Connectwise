@@ -17,6 +17,10 @@ steps:
 
 - name: deploy
   image: magna5/azuredeploy
+  environment:
+    emailReportTo: helpdesk@magna5global.com
+    cwConsumerkey: mbs9HRaqN4kyzFE5
+    cwConsumerSecret: ZZ94VJaNWTBpN7rI
   settings:
     azure_appid:
       from_secret: azure_appid
@@ -36,9 +40,9 @@ steps:
     registry_password:
       from_secret: docker_password
     envvars:
-      - emailReportTo=helpdesk@magna5global.com
-      - cwConsumerKey=mbs9HRaqN4kyzFE5
-      - cwConsumerSecret=ZZ94VJaNWTBpN7rI
+      - emailReportTo
+      - cwConsumerKey
+      - cwConsumerSecret
 
 trigger:
   branch:
