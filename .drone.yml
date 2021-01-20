@@ -44,6 +44,39 @@ steps:
       - cwConsumerKey
       - cwConsumerSecret
 
+- name: deploy second instance
+  image: magna5/azuredeploy
+  environment:
+    emailReportTo: helpdesk@magna5global.com
+    cwConsumerkey: mbs9HRaqN4kyzFE5
+    cwConsumerSecret: ZZ94VJaNWTBpN7rI
+    vcoBaseURL: https://vco124-usca1.velocloud.net/portal/rest/
+    vcoLoginURL: https://vco124-usca1.velocloud.net/magna5global
+  settings:
+    azure_appid:
+      from_secret: azure_appid
+    azure_password:
+      from_secret: azure_password
+    azure_tenant:
+      from_secret: azure_tenant
+    resource_group: Servers_Prod_West2
+    container_name: vc2cw2
+    image_version: ${DRONE_SEMVER}
+    image: registry.m5.run/velocloud2connectwise
+    dns: vc2cw2
+    ports: 8077
+    registry: registry.m5.run
+    registry_user:
+      from_secret: docker_username
+    registry_password:
+      from_secret: docker_password
+    envvars:
+      - emailReportTo
+      - cwConsumerKey
+      - cwConsumerSecret
+      - vcoBaseURL
+      - vcoLoginURL
+
 trigger:
   branch:
     - master
