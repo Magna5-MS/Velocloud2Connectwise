@@ -19,7 +19,7 @@ steps:
   image: magna5/azuredeploy
   environment:
     emailReportTo: helpdesk@magna5global.com
-    cwConsumerkey: mbs9HRaqN4kyzFE5
+    cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
   settings:
     azure_appid:
@@ -48,7 +48,7 @@ steps:
   image: magna5/azuredeploy
   environment:
     emailReportTo: helpdesk@magna5global.com
-    cwConsumerkey: mbs9HRaqN4kyzFE5
+    cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
     vcoBaseURL: https://vco124-usca1.velocloud.net/portal/rest/
     vcoLoginURL: https://vco124-usca1.velocloud.net/magna5global
