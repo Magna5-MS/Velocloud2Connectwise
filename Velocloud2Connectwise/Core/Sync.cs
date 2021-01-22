@@ -248,7 +248,11 @@ namespace Velocloud2Connectwise
         /// </summary>
         public static string MakeIdentifier(string name)
         {
+            if (String.IsNullOrEmpty(name)) 
+                name = "";
+            
             string identifier = name;
+
             Regex rgx = new Regex("[^a-zA-Z0-9 ]"); // Company Identifier must be letter, numbers, and spaces only.
             identifier = rgx.Replace(identifier, "");
             identifier = identifier.Substring(0, Math.Min(25, identifier.Length));
