@@ -92,12 +92,11 @@ namespace Velocloud2Connectwise
                 Int32 uxTimeNext = uxTimeNow + Convert.ToInt32(Environment.GetEnvironmentVariable("jobTimer")) * 60;
                 Gauge nextSyncTime = Metrics.CreateGauge("velocloud2connectwise_next_sync_time", "Velocloud2Connectwise unix timestamp of next scheduled sync");
                 nextSyncTime.IncTo(uxTimeNext);
-
-                Thread.Sleep(Convert.ToInt32(Environment.GetEnvironmentVariable("jobTimer")) * 60 * 1000);
+                                
                 Console.WriteLine("Job timer elapsed");
                 SyncController.Execute();
                 counterJobElapsed.Inc();
-
+                Thread.Sleep(Convert.ToInt32(Environment.GetEnvironmentVariable("jobTimer")) * 60 * 1000);
             }
             
         }

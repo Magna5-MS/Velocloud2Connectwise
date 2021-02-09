@@ -15,6 +15,13 @@ namespace Velocloud2Connectwise.Models.Velocloud
         public string accountNumber { get; set; }
         public string contactPhone { get; set; }
         public bool containsMatch { get; set; } = true;
+        public Error error { get; set; }
+    }
+    public class Error
+    {
+        public string code { get; set; }
+        public string message { get; set; }
+
     }
     public class Inventory
     {

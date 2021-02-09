@@ -11,10 +11,10 @@
       <Variable name="cwBaseURL" value="https://na.myconnectwise.net/v4_6_release/apis/3.0/" xmlns="" />
       <Variable name="cwConsumerKey" value="WElqfwuw091OERQp" xmlns="" />
       <Variable name="cwConsumerSecret" value="jI87DQT0Jed1UqBV" xmlns="" />
-      <Variable name="vcoBaseURL" value="https://vco160-usca1.velocloud.net/portal/rest/" xmlns="" />
+      <Variable name="vcoBaseURL" value="https://vco124-usca1.velocloud.net/portal/rest/" xmlns="" />
       <Variable name="vcoConsumerKey" value="api@magna5global.com" xmlns="" />
       <Variable name="vcoConsumerSecret" value="WrwleCHn^e83@5lX" xmlns="" />
-      <Variable name="vcoLoginURL" value="https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin" xmlns="" />
+      <Variable name="vcoLoginURL" value="https://vco124-usca1.velocloud.net/magna5global/login/enterpriseLogin" xmlns="" />
       <Variable name="cwClientID" value="c7b06b83-e581-4693-98eb-1aa250a65435" xmlns="" />
       <Variable name="emailReportTo" value="growe@magna5global.com" xmlns="" />
       <Variable name="smtpRelay" value="" xmlns="" />
