@@ -18,6 +18,7 @@ steps:
 - name: deploy
   image: magna5/azuredeploy
   environment:
+    smtpRelay: mxa-00325501.gslb.pphosted.com
     emailReportTo: helpdesk@magna5global.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
@@ -40,6 +41,7 @@ steps:
     registry_password:
       from_secret: docker_password
     envvars:
+      - smtpRelay
       - emailReportTo
       - cwConsumerKey
       - cwConsumerSecret
@@ -48,6 +50,7 @@ steps:
   image: magna5/azuredeploy
   environment:
     emailReportTo: helpdesk@magna5global.com
+    smtpRelay: mxa-00325501.gslb.pphosted.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
     vcoBaseURL: https://vco124-usca1.velocloud.net/portal/rest/
@@ -71,6 +74,7 @@ steps:
     registry_password:
       from_secret: docker_password
     envvars:
+      - smtpRelay
       - emailReportTo
       - cwConsumerKey
       - cwConsumerSecret
