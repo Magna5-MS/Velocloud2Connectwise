@@ -54,7 +54,7 @@ steps:
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
     vcoBaseURL: https://vco124-usca1.velocloud.net/portal/rest/
-    vcoLoginURL: https://vco124-usca1.velocloud.net/magna5global
+    vcoLoginURL: https://vco124-usca1.velocloud.net/magna5global/login/enterpriseLogin
   settings:
     azure_appid:
       from_secret: azure_appid

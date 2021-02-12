@@ -164,6 +164,10 @@ namespace Velocloud2Connectwise.Velocloud
             var response = client.Execute<List<Models.Velocloud.Company>>(request);
             if (!response.IsSuccessful)
                 throw new Exception("Velocloud api error in GetCompaniesObject(): (" + response.StatusCode + ") " + response.Content);
+            if (response.Data.Count == 1 && response.Data[0].error != null)
+            {
+                throw new Exception("Velocloud api error in GetCompaniesObject(): " + response.Data[0].error.message);
+            }
             return response.Data;
         }
         
