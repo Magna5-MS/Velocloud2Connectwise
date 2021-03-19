@@ -14,7 +14,7 @@ ENV vcoConsumerSecret=WrwleCHn^e83@5lX
 ENV vcoLoginURL=https://vco160-usca1.velocloud.net/magna5global/login/enterpriseLogin
 ENV emailReportTo=growe@magna5global.com
 ENV smtpRelay=mailrelay.magna5global.com
-ENV SENTRY_DSN=https://da4d4d6ac04e4f858a1a2707c8b4fa14@sentry.io/2239777
+ENV SENTRY_DSN=https://da4d4d6ac04e4f858a1a2707c8b4fa14@o347551.ingest.sentry.io/2239777
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1-stretch AS build
 WORKDIR /src
