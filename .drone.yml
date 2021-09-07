@@ -22,6 +22,7 @@ steps:
     emailReportTo: helpdesk@magna5global.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
+    cwClientID: f8454a72-ab28-4de9-b512-275e5f0dd8bd
   settings:
     azure_appid:
       from_secret: azure_appid
@@ -45,6 +46,7 @@ steps:
       - emailReportTo
       - cwConsumerKey
       - cwConsumerSecret
+      - cwClientID
 
 - name: deploy second instance
   image: magna5/azuredeploy
@@ -53,6 +55,7 @@ steps:
     smtpRelay: mxa-00325501.gslb.pphosted.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
+    cwClientID: f8454a72-ab28-4de9-b512-275e5f0dd8bd
     vcoBaseURL: https://vco124-usca1.velocloud.net/portal/rest/
     vcoLoginURL: https://vco124-usca1.velocloud.net/magna5global/login/enterpriseLogin
   settings:
@@ -78,6 +81,7 @@ steps:
       - emailReportTo
       - cwConsumerKey
       - cwConsumerSecret
+      - cwClientID
       - vcoBaseURL
       - vcoLoginURL
 
