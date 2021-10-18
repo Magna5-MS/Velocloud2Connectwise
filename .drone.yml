@@ -18,7 +18,7 @@ steps:
 - name: deploy
   image: magna5/azuredeploy
   environment:
-    smtpRelay: mxa-00325501.gslb.pphosted.com
+    smtpRelay: mailrelay.magna5global.com
     emailReportTo: helpdesk@magna5global.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
@@ -52,7 +52,7 @@ steps:
   image: magna5/azuredeploy
   environment:
     emailReportTo: helpdesk@magna5global.com
-    smtpRelay: mxa-00325501.gslb.pphosted.com
+    smtpRelay: mailrelay.magna5global.com
     cwConsumerKey: mbs9HRaqN4kyzFE5
     cwConsumerSecret: ZZ94VJaNWTBpN7rI
     cwClientID: f8454a72-ab28-4de9-b512-275e5f0dd8bd
