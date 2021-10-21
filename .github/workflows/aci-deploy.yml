@@ -26,6 +26,7 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.M5_GITHUB_TOKEN }}
         - run: |
+            docker pull ghcr.io/magna5/velocloud2connectwise:master
             docker build . -t ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
             docker push ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
 
