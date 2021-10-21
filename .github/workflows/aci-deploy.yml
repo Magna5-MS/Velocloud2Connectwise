@@ -1,8 +1,10 @@
 name: ACI Deploy
 
-on:
-  release:
-    types: [released]  
+
+on: [push]
+#on:
+  #release:
+    # types: [released]  
 
 jobs:
     build-and-deploy:
