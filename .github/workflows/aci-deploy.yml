@@ -27,7 +27,7 @@ jobs:
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: Servers_Prod_West2
-            dns-name-label: vc2cw2
+            dns-name-label: vc2cw
             image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ports: 8077
             registry-login-server: ${{ env.REGISTRY }}
