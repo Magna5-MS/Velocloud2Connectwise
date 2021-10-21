@@ -26,15 +26,15 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.M5_GITHUB_TOKEN }}
         - run: |
-            docker build . -t ghcr.io/${{ github.repository }}:${{ github.sha }}
-            docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
+            docker build . -t ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
+            docker push ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: Servers_Prod_West2
             dns-name-label: Servers_Prod_West2${{ github.run_number }}
-            image: ghcr.io/${{ github.repository }}:${{ github.sha }}
+            image: ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
             registry-login-server: ghcr.io
             registry-username: ${{ github.actor }}
             registry-password: ${{ secrets.M5_GITHUB_TOKEN }}
