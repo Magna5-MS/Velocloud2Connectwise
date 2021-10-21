@@ -5,7 +5,11 @@ on: [push]
 #on:
   #release:
     # types: [released]  
-
+env:
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
@@ -18,26 +22,17 @@ jobs:
           uses: azure/login@v1
           with:
             creds: '{"clientId":"${{ secrets.AZURE_APPID }}","clientSecret":"${{ secrets.AZURE_PASSWORD }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT }}", "resourceManagerEndpointUrl": "https://management.azure.com/"}'
-        
-        - name: 'Build and push image'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.M5_GITHUB_TOKEN }}
-        - run: |
-            docker pull ghcr.io/magna5/velocloud2connectwise:master
-            docker build . -t ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
-            docker push ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: Servers_Prod_West2
-            dns-name-label: Servers_Prod_West2${{ github.run_number }}
-            image: ghcr.io/magna5/velocloud2connectwise:${{ github.sha }}
-            registry-login-server: ghcr.io
+            dns-name-label: vc2cw2.westus2.azurecontainer.io
+            image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ports: 8077
+            registry-login-server: ${{ env.REGISTRY }}
             registry-username: ${{ github.actor }}
             registry-password: ${{ secrets.M5_GITHUB_TOKEN }}
+            environment-variables: smtpRelay=mailrelay.magna5global.com emailReportTo=helpdesk@magna5global.com cwConsumerKey=mbs9HRaqN4kyzFE5 cwConsumerSecret=ZZ94VJaNWTBpN7rI cwClientID=f8454a72-ab28-4de9-b512-275e5f0dd8bd
             name: vc2cw
             location: 'West US 2'
