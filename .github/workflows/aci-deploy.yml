@@ -22,20 +22,20 @@ jobs:
         - name: 'Build and push image'
           uses: azure/docker-login@v1
           with:
-            login-server: ${{ env.REGISTRY }}
+            login-server: ghcr.io
             username: ${{ github.actor }}
             password: ${{ secrets.M5_GITHUB_TOKEN }}
         - run: |
-            docker build . -t ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
-            docker push ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+            docker build . -t ghcr.io/${{ github.repository }}:${{ github.sha }}
+            docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: Servers_Prod_West2
             dns-name-label: Servers_Prod_West2${{ github.run_number }}
-            image: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
-            registry-login-server: ${{ env.REGISTRY }}
+            image: ghcr.io/${{ github.repository }}:${{ github.sha }}
+            registry-login-server: ghcr.io
             registry-username: ${{ github.actor }}
             registry-password: ${{ secrets.M5_GITHUB_TOKEN }}
             name: vc2cw
