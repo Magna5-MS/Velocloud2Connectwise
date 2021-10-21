@@ -28,7 +28,7 @@ jobs:
           with:
             resource-group: Servers_Prod_West2
             dns-name-label: vc2cw
-            image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:master
             ports: 8077
             registry-login-server: ${{ env.REGISTRY }}
             registry-username: ${{ github.actor }}
