@@ -1,0 +1,40 @@
+name: ACI Deploy
+
+on:
+  release:
+    types: [released]  
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+          
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: '{"clientId":"${{ secrets.AZURE_APPID }}","clientSecret":"${{ secrets.AZURE_PASSWORD }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT }}", "resourceManagerEndpointUrl": "https://management.azure.com/"}'
+        
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ env.REGISTRY }}
+            username: ${{ github.actor }}
+            password: ${{ secrets.M5_GITHUB_TOKEN }}
+        - run: |
+            docker build . -t ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+            docker push ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: Servers_Prod_West2
+            dns-name-label: Servers_Prod_West2${{ github.run_number }}
+            image: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+            registry-login-server: ${{ env.REGISTRY }}
+            registry-username: ${{ github.actor }}
+            registry-password: ${{ secrets.M5_GITHUB_TOKEN }}
+            name: vc2cw
+            location: 'West US 2'
