@@ -1,38 +1,64 @@
 name: ACI Deploy
 
-
-on: [push]
-#on:
-  #release:
-    # types: [released]  
+#on: [push]
+on:
+  release:
+     types: [released]  
 env:
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: magna5/velocloud2connectwise
   
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-        # checkout the repo
-        - name: 'Checkout GitHub Action'
-          uses: actions/checkout@main
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repo
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@main
           
-        - name: 'Login via Azure CLI'
-          uses: azure/login@v1
-          with:
-            creds: '{"clientId":"${{ secrets.AZURE_APPID }}","clientSecret":"${{ secrets.AZURE_PASSWORD }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT }}", "resourceManagerEndpointUrl": "https://management.azure.com/"}'
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: '{"clientId":"${{ secrets.AZURE_APPID }}","clientSecret":"${{ secrets.AZURE_PASSWORD }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT }}", "resourceManagerEndpointUrl": "https://management.azure.com/"}'
 
-        - name: 'Deploy to Azure Container Instances'
-          uses: 'azure/aci-deploy@v1'
-          with:
-            resource-group: Servers_Prod_West2
-            dns-name-label: vc2cw
-            image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:master
-            ports: 8077
-            registry-login-server: ${{ env.REGISTRY }}
-            registry-username: ${{ github.actor }}
-            registry-password: ${{ secrets.M5_GITHUB_TOKEN }}
-            environment-variables: smtpRelay=mailrelay.magna5global.com emailReportTo=helpdesk@magna5global.com cwConsumerKey=mbs9HRaqN4kyzFE5 cwConsumerSecret=ZZ94VJaNWTBpN7rI cwClientID=f8454a72-ab28-4de9-b512-275e5f0dd8bd
-            name: vc2cw
-            location: 'West US 2'
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - run: |
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          docker build . -t ghcr.io/$IMAGE_NAME:$VERSION
+          docker push ghcr.io/$IMAGE_NAME:$VERSION
+          
+    - name: 'Deploy to Azure Container Instances - 1st Instance'
+      uses: 'azure/aci-deploy@v1'
+      with:
+        resource-group: Servers_Prod_West2
+        dns-name-label: vc2cw
+        image: ghcr.io/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        ports: 8077
+        registry-login-server: ghcr.io
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        environment-variables: smtpRelay=mailrelay.magna5global.com emailReportTo=helpdesk@magna5global.com cwConsumerKey=mbs9HRaqN4kyzFE5 cwConsumerSecret=ZZ94VJaNWTBpN7rI cwClientID=f8454a72-ab28-4de9-b512-275e5f0dd8bd
+        name: vc2cw
+        location: 'West US 2'
+
+    - name: 'Deploy to Azure Container Instances - 2nd Instance'
+      uses: 'azure/aci-deploy@v1'
+      with:
+        resource-group: Servers_Prod_West2
+        dns-name-label: vc2cw2
+        image: ghcr.io/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        ports: 8077
+        registry-login-server: ghcr.io
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        environment-variables: smtpRelay=mailrelay.magna5global.com emailReportTo=helpdesk@magna5global.com cwConsumerKey=mbs9HRaqN4kyzFE5 cwConsumerSecret=ZZ94VJaNWTBpN7rI cwClientID=f8454a72-ab28-4de9-b512-275e5f0dd8bd vcoBaseURL=https://vco124-usca1.velocloud.net/portal/rest/ vcoLoginURL=https://vco124-usca1.velocloud.net/magna5global/login/enterpriseLogin
+        name: vc2cw2
+        location: 'West US 2'        
